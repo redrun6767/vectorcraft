@@ -224,8 +224,9 @@ perspective, Cmd on a side shears).
 
 Ruler guides are layer objects: `guide.add` puts a guide on the current layer (or `layer`), where it shows, hides,
 locks and is deleted with its layer and is listed in the Layers panel (a click on its row selects it, Shift or Cmd adds
-it to the selection); `guide.setLayer {index?, layer}` moves guides to another layer, and `guide.list` gives each
-guide's `layer`, `shown` and `editable`. A guide selected with art (`guide.select {toggle: true}`, a Shift-click on the
+it to the selection); `guide.setLayer {index?, indexes?, layer}` moves guides to another layer (as dragging their rows onto
+that layer's rows does), and `guide.list` gives each guide's `layer`, `shown` and `editable`. Guides in files saved
+before guides had layers go on the top visible, unlocked layer when the document opens. A guide selected with art (`guide.select {toggle: true}`, a Shift-click on the
 canvas or its row) is what `object.align` aligns the art to: left edges, centres or right edges to a vertical guide,
 tops, centres or bottoms to a horizontal one.
 
