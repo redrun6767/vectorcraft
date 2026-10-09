@@ -184,10 +184,11 @@ mod tests {
         for _ in 0..3 {
             let raw =
                 egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1400.0, 900.0))), ..Default::default() };
-            let out = ctx.run_ui(raw, |ui| {
+            let mut out = ctx.run_ui(raw, |ui| {
                 app.logic(ui.ctx());
                 app.ui(ui);
             });
+            out.textures_delta.clear();
             text = out
                 .shapes
                 .iter()
