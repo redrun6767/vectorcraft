@@ -15,6 +15,9 @@ use crate::{VectorcraftApp, icons, widgets};
 /// The Liquify tools, which share a brush.
 const LIQUIFY: [&str; 7] = ["warp", "twirl", "pucker", "bloat", "scallop", "crystallize", "wrinkle"];
 
+/// The Type tools, which show the character and paragraph settings of the text they edit.
+const TYPE_TOOLS: [&str; 7] = ["type", "areaType", "typeOnPath", "verticalType", "verticalAreaType", "verticalTypeOnPath", "touchType"];
+
 /// Height of the bar.
 pub const HEIGHT: f32 = 34.0;
 
@@ -38,11 +41,46 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
                 ui.add_space(6.0);
                 ui.separator();
                 ui.add_space(4.0);
-                if !fields(app, ui, &tool) {
+                let typing = TYPE_TOOLS.contains(&tool.as_str());
+                if typing {
+                    type_controls(app, ui);
+                } else if !fields(app, ui, &tool) {
                     ui.label(egui::RichText::new(tl!("This tool has no options")).size(12.0).color(t.text_dim));
+                }
+                // The selection's alignment, position and size, with any tool.
+                if app.session.active().is_some_and(|st| !st.selection.objects.is_empty()) {
+                    ui.add_space(4.0);
+                    ui.separator();
+                    crate::chrome::selection_controls(app, ui, "to");
                 }
             });
         });
+}
+
+/// The Type tools' settings: the Character link (the Character panel in a popover), font family,
+/// style and size, then the Paragraph link and the paragraph alignment buttons, for the text
+/// selected or edited; without text, a note saying so.
+fn type_controls(app: &mut VectorcraftApp, ui: &mut Ui) {
+    let t = Tokens::get(ui.ctx());
+    let Some((s, _)) = crate::panels::character::text_style(app) else {
+        ui.label(egui::RichText::new(tl!("No text selected")).size(12.0).color(t.text_dim));
+        return;
+    };
+    let character = ui.link(egui::RichText::new(tl!("Character:")).size(12.0).color(t.text).underline()).on_hover_text(tl!("Character options"));
+    widgets::popover(&character, character.clicked(), |ui| {
+        ui.set_width(260.0);
+        crate::panels::character::show(app, ui);
+    });
+    crate::panels::character::font_pickers(app, ui, &s, ("to-font", "to-font-style"), (150.0, 96.0));
+    crate::panels::character::size_field(app, ui, "to-font-size", 90.0);
+    ui.add_space(4.0);
+    ui.separator();
+    let paragraph = ui.link(egui::RichText::new(tl!("Paragraph:")).size(12.0).color(t.text).underline()).on_hover_text(tl!("Paragraph options"));
+    widgets::popover(&paragraph, paragraph.clicked(), |ui| {
+        ui.set_width(260.0);
+        crate::panels::paragraph::show(app, ui);
+    });
+    crate::panels::paragraph::alignment_buttons(app, ui, 24.0);
 }
 
 /// A number setting: `key`, shown `scale` times its value with `suffix`, set back divided by it;
@@ -216,6 +254,13 @@ mod tests {
         assert!(text.contains("Star Tool") && text.contains("Points:") && text.contains("Inner Radius:"), "{text}");
         let text = bar_text(&mut app, "warp");
         assert!(text.contains("Width:") && text.contains("Intensity:"), "{text}");
+        // The Type tool: a note without text; with text selected, its character and paragraph
+        // settings, then the selection's alignment, position and size.
+        let text = bar_text(&mut app, "type");
+        assert!(text.contains("Type Tool") && text.contains("No text selected"), "{text}");
+        app.run("text.create", json!({"x": 40, "y": 60, "text": "Hello"})).unwrap();
+        let text = bar_text(&mut app, "type");
+        assert!(text.contains("Character:") && text.contains("Paragraph:") && text.contains("X:") && text.contains("W:"), "{text}");
         let text = bar_text(&mut app, "hand");
         assert!(text.contains("Hand Tool") && text.contains("This tool has no options"), "{text}");
         // Kept in workspaces.

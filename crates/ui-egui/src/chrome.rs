@@ -195,7 +195,6 @@ pub fn control_bar(app: &mut VectorcraftApp, ui: &mut Ui) {
                     return;
                 };
                 let sel = st.selection.objects.clone();
-                let units = app.session.general_unit();
                 let first = sel.first().and_then(|id| st.doc.node(*id)).cloned();
                 let anchors = anchor_controls(app);
                 let label = match &first {
@@ -268,46 +267,59 @@ pub fn control_bar(app: &mut VectorcraftApp, ui: &mut Ui) {
                     }
                     return;
                 }
-                // Align buttons.
-                for (icon, tip, p) in [
-                    ("align-start-vertical", "Horizontal Align Left", json!({"horizontal": "left"})),
-                    ("align-center-vertical", "Horizontal Align Center", json!({"horizontal": "center"})),
-                    ("align-end-vertical", "Horizontal Align Right", json!({"horizontal": "right"})),
-                    ("align-start-horizontal", "Vertical Align Top", json!({"vertical": "top"})),
-                    ("align-center-horizontal", "Vertical Align Center", json!({"vertical": "center"})),
-                    ("align-end-horizontal", "Vertical Align Bottom", json!({"vertical": "bottom"})),
-                ] {
-                    if widgets::icon_button(ui, icon, tl!(tip), false, 24.0).clicked() {
-                        let mut p = p;
-                        if sel.len() == 1 {
-                            p["to"] = json!("artboard");
-                        }
-                        app.run("object.align", p).ok();
-                    }
-                }
-                ui.separator();
-                // The Transform link opens the whole Transform panel (reference point, rotate,
-                // shear, options) in a popover; X/Y/W/H follow inline while the bar has room.
-                crate::panels::transform::link(app, ui);
-                // The bounding box, rotated with rotated objects: its centre and its own sides.
-                if let Some(b) = app.selection_box()
-                    && ui.available_width() >= INLINE_TRANSFORM_WIDTH
-                {
-                    let c = b.center();
-                    let link = app.session.prefs.constrain_proportions;
-                    for (k, lbl, v) in [("x", "X:", c.x), ("y", "Y:", c.y), ("width", "W:", b.rect.width()), ("height", "H:", b.rect.height())] {
-                        // The W/H link sits between W and H.
-                        if k == "height" {
-                            crate::panels::transform::constrain_link(app, ui);
-                        }
-                        widgets::field_label(ui, egui::RichText::new(tl!(lbl)).size(12.0).color(t.text_dim));
-                        if let Some(nv) = widgets::num_field(ui, ("cb", k), Some(v), units, 80.0) {
-                            app.run("object.setBounds", json!({k: nv, "reference": 4, "proportional": link})).ok();
-                        }
-                    }
-                }
+                selection_controls(app, ui, "cb");
             });
         });
+}
+
+/// The Align buttons, then the Transform link and the selection's X, Y, W and H while the bar has
+/// room (Control bar, Tool Options bar: `prefix` keeps their fields apart). One object aligns to
+/// its artboard, unless a ruler guide selected with it is what it aligns to.
+pub(crate) fn selection_controls(app: &mut VectorcraftApp, ui: &mut Ui, prefix: &'static str) {
+    let t = Tokens::get(ui.ctx());
+    let units = app.session.general_unit();
+    let Some((count, guides)) = app.session.active().map(|st| (st.selection.objects.len(), st.selection.guides.len())) else { return };
+    if count == 0 {
+        return;
+    }
+    // Align buttons.
+    for (icon, tip, p) in [
+        ("align-start-vertical", "Horizontal Align Left", json!({"horizontal": "left"})),
+        ("align-center-vertical", "Horizontal Align Center", json!({"horizontal": "center"})),
+        ("align-end-vertical", "Horizontal Align Right", json!({"horizontal": "right"})),
+        ("align-start-horizontal", "Vertical Align Top", json!({"vertical": "top"})),
+        ("align-center-horizontal", "Vertical Align Center", json!({"vertical": "center"})),
+        ("align-end-horizontal", "Vertical Align Bottom", json!({"vertical": "bottom"})),
+    ] {
+        if widgets::icon_button(ui, icon, tl!(tip), false, 24.0).clicked() {
+            let mut p = p;
+            if count == 1 && guides == 0 {
+                p["to"] = json!("artboard");
+            }
+            app.run("object.align", p).ok();
+        }
+    }
+    ui.separator();
+    // The Transform link opens the whole Transform panel (reference point, rotate, shear,
+    // options) in a popover; X/Y/W/H follow inline while the bar has room.
+    crate::panels::transform::link(app, ui);
+    // The bounding box, rotated with rotated objects: its centre and its own sides.
+    if let Some(b) = app.selection_box()
+        && ui.available_width() >= INLINE_TRANSFORM_WIDTH
+    {
+        let c = b.center();
+        let link = app.session.prefs.constrain_proportions;
+        for (k, lbl, v) in [("x", "X:", c.x), ("y", "Y:", c.y), ("width", "W:", b.rect.width()), ("height", "H:", b.rect.height())] {
+            // The W/H link sits between W and H.
+            if k == "height" {
+                crate::panels::transform::constrain_link(app, ui);
+            }
+            widgets::field_label(ui, egui::RichText::new(tl!(lbl)).size(12.0).color(t.text_dim));
+            if let Some(nv) = widgets::num_field(ui, (prefix, k), Some(v), units, 80.0) {
+                app.run("object.setBounds", json!({k: nv, "reference": 4, "proportional": link})).ok();
+            }
+        }
+    }
 }
 
 /// A document tab's title: "Name* @ 66.67 % (RGB/Preview)", or while an opacity mask is edited

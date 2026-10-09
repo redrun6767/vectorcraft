@@ -29,8 +29,9 @@ pub struct Selection {
     /// clears them.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub slices: Vec<NodeId>,
-    /// Ruler guides selected with a selection tool, as indexes into [`Document::guides`]. They are
-    /// selected on their own: any change to the object selection clears them.
+    /// Ruler guides selected with a selection tool, as indexes into [`Document::guides`]. A new
+    /// selection ([`Self::set`]) clears them; Shift-adding or -removing objects keeps them, so
+    /// guides and objects can be selected together (Align then aligns the objects to the guide).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub guides: Vec<usize>,
 }
@@ -66,7 +67,6 @@ impl Selection {
     pub fn add(&mut self, id: NodeId) {
         self.target = None;
         self.slices.clear();
-        self.guides.clear();
         if !self.objects.contains(&id) {
             self.objects.push(id);
         }
@@ -74,7 +74,6 @@ impl Selection {
     pub fn remove(&mut self, id: NodeId) {
         self.target = None;
         self.slices.clear();
-        self.guides.clear();
         self.objects.retain(|x| *x != id);
         self.anchors.remove(&id);
         if self.key == Some(id) {
@@ -175,7 +174,10 @@ mod tests {
         s.set_guides([2, 0, 2]);
         assert_eq!((s.objects.clone(), s.guides.clone()), (vec![], vec![2, 0]));
         assert!(s.has_objects_or_guides() && s.is_empty());
+        // Shift-adding an object keeps them; a new selection doesn't.
         s.add(NodeId(1));
+        assert_eq!(s.guides, vec![2, 0]);
+        s.set([NodeId(1)]);
         assert!(s.guides.is_empty());
         // Pruning drops guides the document no longer has.
         let mut d = Document::new(100.0, 100.0);

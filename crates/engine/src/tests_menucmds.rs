@@ -996,6 +996,14 @@ fn ruler_guides_live_on_layers_and_art_aligns_to_them() {
     assert_eq!(guides(&s), [(true, 200.0)]);
     s.execute("edit.undo", &json!({})).unwrap();
     assert_eq!(guides(&s).len(), 2);
+    // Shift-adding art keeps the selected guide; Delete takes both, in one step.
+    s.execute("guide.select", &json!({"indexes": [0]})).unwrap();
+    s.execute("select.add", &json!({"ids": [a.0]})).unwrap();
+    assert_eq!((selected(&s), selected_guides(&s)), (vec![a], vec![0]));
+    let n = undo_len(&s);
+    s.execute("edit.clear", &json!({})).unwrap();
+    assert_eq!((guides(&s), undo_len(&s)), (vec![(false, 300.0)], n + 1));
+    assert!(s.doc().unwrap().doc.node(a).is_none());
 }
 
 /// #451: art moved with the Selection tool lands flush on the artboard's edges and centre (Smart

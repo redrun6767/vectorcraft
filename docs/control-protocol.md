@@ -234,7 +234,9 @@ Tool Options bar: `window.toolOptions` shows or hides a bar under the Control ba
 settings (the Pencil's and Paintbrush's Fidelity and tolerances, the Blob Brush's and Eraser's size, the shape tools'
 corner radius, sides and points, the Spiral's and grids' segments and dividers, the Liquify and Symbolism tools'
 brush), set through `tool.setOption`; it is kept in user workspaces. With it on, the Control bar leaves the settings it
-shows for a few tools (Artboard, Crop Image, Puppet Warp, Mirror & Cut) to it.
+shows for a few tools (Artboard, Crop Image, Puppet Warp, Mirror & Cut) to it. With a Type tool it shows the
+character settings (the Character panel in a popover, font family, style and size) and the paragraph alignment of
+the text selected or edited, and with any tool, while art is selected, the Align buttons and its X, Y, W and H.
 
 Floating panels: dragging a dock tab, a panel icon or a popped-out panel's title out of the dock floats that panel
 inside the window, and the strip right of the dock's tabs floats the whole Properties | Layers | Libraries group. A

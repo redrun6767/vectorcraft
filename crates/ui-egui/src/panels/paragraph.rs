@@ -60,6 +60,18 @@ fn shown_alignment(justify: Justify, rtl: bool) -> Justify {
     }
 }
 
+/// The paragraph alignment buttons, `size` points each, for the text the panels act on (Tool
+/// Options bar); nothing without type.
+pub(crate) fn alignment_buttons(app: &mut VectorcraftApp, ui: &mut Ui, size: f32) {
+    let Some((_, para)) = text_style(app) else { return };
+    let shown = shown_alignment(para.justify, resolved_rtl(app, &para));
+    for (j, icon, tip, id) in ALIGNMENTS {
+        if widgets::icon_button(ui, icon, tip, shown == j, size).clicked() {
+            para_cmd(app, "text.setStyle", json!({"justify": id}));
+        }
+    }
+}
+
 pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
     let t = Tokens::get(ui.ctx());
     let Some((_, para)) = text_style(app) else {
