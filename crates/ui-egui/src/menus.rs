@@ -214,6 +214,7 @@ pub const UI_COMMANDS: &[(&str, &str, &str, &str)] = &[
     ("view.screenMode", "Screen Mode", "F", "{mode?: 0..2} (no param cycles)"),
     ("view.rotateReset", "Reset Rotate View", "Cmd+Shift+1", "{}"),
     ("window.control", "Control", "", "{}"),
+    ("window.toolOptions", "Tool Options", "", "{} show or hide the Tool Options bar: the settings of the tool in hand, under the Control bar"),
     ("window.toolbar", "Tools", "", "{}"),
     (
         "window.toolbarColumns",
@@ -1045,6 +1046,7 @@ pub fn run_ui_command(app: &mut VectorcraftApp, id: &str, p: &Value) -> Option<R
             Ok(Value::Null)
         }
         "window.control" => flag(&mut app.ui.control_bar),
+        "window.toolOptions" => flag(&mut app.ui.tool_options),
         "window.toolbar" => flag(&mut app.ui.toolbar),
         "window.toolbarColumns" => opt_bool(p, "double").map(|on| {
             let on = on.unwrap_or(!app.ui.toolbar_double);
@@ -1409,6 +1411,7 @@ pub fn checked(app: &VectorcraftApp, id: &str, p: &Value) -> Option<bool> {
         "view.snapToPoint" => v.snap_to_point,
         "view.rulers" => v.rulers,
         "window.control" => app.ui.control_bar,
+        "window.toolOptions" => app.ui.tool_options,
         "window.toolbar" => app.ui.toolbar,
         "window.toolbarAdvanced" => app.ui.toolbar_advanced,
         "window.toolbarColumns" => app.ui.toolbar_double,
@@ -2472,6 +2475,7 @@ pub fn menu_tree() -> Vec<(&'static str, Vec<Item>)> {
                 sub("Workspace", crate::workspaces::menu_items()),
                 Sep,
                 c("Control", "window.control"),
+                c("Tool Options", "window.toolOptions"),
                 c("Contextual Task Bar", "window.taskBar"),
                 c("Tools", "window.toolbar"),
                 sub("Toolbars", vec![c("Advanced", "window.toolbarAdvanced"), c("Double Column", "window.toolbarColumns")]),

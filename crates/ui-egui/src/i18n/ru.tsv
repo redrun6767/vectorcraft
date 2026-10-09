@@ -3733,3 +3733,15 @@ axis	Both	Оба
 	Perspective Distort	Искажение перспективы
 	Artboard	Монтажная область
 	Exit	Выйти
+	Tool Options	Параметры инструмента
+	This tool has no options	У этого инструмента нет параметров
+	Points:	Лучи:
+	Inner Radius:	Внутренний радиус:
+	Decay:	Затухание:
+	Segments:	Сегменты:
+	Clockwise	По часовой стрелке
+	Closed	Замкнутый
+	Diameter:	Диаметр:
+	Density:	Плотность:
+	Concentric Dividers:	Концентрические разделители:
+	Radial Dividers:	Радиальные разделители:

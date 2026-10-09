@@ -50,6 +50,7 @@ pub mod state;
 pub mod sysclip;
 pub mod theme;
 pub mod titlebar;
+mod tool_options;
 pub mod toolbar;
 mod touch;
 mod ui_fonts;
@@ -1015,6 +1016,9 @@ impl VectorcraftApp {
             chrome::app_bar(self, ui);
             if self.ui.control_bar {
                 chrome::control_bar(self, ui);
+            }
+            if self.ui.tool_options {
+                tool_options::show(self, ui);
             }
         }
         if self.ui.status_bar && self.ui.screen_mode < 3 {

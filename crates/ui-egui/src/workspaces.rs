@@ -16,6 +16,8 @@ use crate::{VectorcraftApp, widgets};
 pub struct Workspace {
     pub name: String,
     pub control_bar: bool,
+    /// The Tool Options bar (built-in workspaces: hidden).
+    pub tool_options: bool,
     pub rulers: bool,
     pub toolbar: bool,
     pub toolbar_double: bool,
@@ -116,6 +118,7 @@ pub fn capture(ui: &UiState, name: &str) -> Workspace {
     Workspace {
         name: name.into(),
         control_bar: ui.control_bar,
+        tool_options: ui.tool_options,
         rulers: ui.view.rulers,
         toolbar: ui.toolbar,
         toolbar_double: ui.toolbar_double,
@@ -135,6 +138,7 @@ pub fn capture(ui: &UiState, name: &str) -> Workspace {
 /// Apply a workspace's layout flags (brightness, prefs, shortcuts etc. untouched).
 pub fn apply(ui: &mut UiState, w: &Workspace) {
     ui.control_bar = w.control_bar;
+    ui.tool_options = w.tool_options;
     ui.view.rulers = w.rulers;
     ui.toolbar = w.toolbar;
     ui.toolbar_double = w.toolbar_double;

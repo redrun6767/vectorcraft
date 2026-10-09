@@ -3735,3 +3735,15 @@ axis	Both	Ambos
 	Constrain	Restringir
 	Free Transform	Transformación libre
 	Perspective Distort	Distorsión de perspectiva
+	Tool Options	Opciones de herramienta
+	This tool has no options	Esta herramienta no tiene opciones
+	Points:	Puntas:
+	Inner Radius:	Radio interior:
+	Decay:	Disminución:
+	Segments:	Segmentos:
+	Clockwise	En el sentido de las agujas del reloj
+	Closed	Cerrado
+	Diameter:	Diámetro:
+	Density:	Densidad:
+	Concentric Dividers:	Divisores concéntricos:
+	Radial Dividers:	Divisores radiales:

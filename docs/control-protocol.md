@@ -222,6 +222,12 @@ Constrain acts as Shift held (proportional scaling, moves and rotations by 45°)
 where it is greyed. The modifier keys still work while dragging (Cmd on a corner distorts it freely, Cmd+Alt+Shift in
 perspective, Cmd on a side shears).
 
+Tool Options bar: `window.toolOptions` shows or hides a bar under the Control bar with the tool in hand and its
+settings (the Pencil's and Paintbrush's Fidelity and tolerances, the Blob Brush's and Eraser's size, the shape tools'
+corner radius, sides and points, the Spiral's and grids' segments and dividers, the Liquify and Symbolism tools'
+brush), set through `tool.setOption`; it is kept in user workspaces. With it on, the Control bar leaves the settings it
+shows for a few tools (Artboard, Crop Image, Puppet Warp, Mirror & Cut) to it.
+
 Floating panels: dragging a dock tab, a panel icon or a popped-out panel's title out of the dock floats that panel
 inside the window, and the strip right of the dock's tabs floats the whole Properties | Layers | Libraries group. A
 floating group moves by its title bar (or the strip right of its tabs); a tab dragged out of it floats on its own;

@@ -3412,3 +3412,14 @@ axis	Both	两者
 	Draft	草稿
 	Good	良好
 	Best	最佳
+	Tool Options	工具选项
+	This tool has no options	此工具没有选项
+	Inner Radius:	内半径：
+	Decay:	衰减：
+	Segments:	段数：
+	Clockwise	顺时针
+	Closed	闭合
+	Diameter:	直径：
+	Density:	密度：
+	Concentric Dividers:	同心圆分隔线：
+	Radial Dividers:	放射状分隔线：

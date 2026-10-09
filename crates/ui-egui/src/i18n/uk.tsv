@@ -3718,3 +3718,15 @@ axis	Both	Обидві
 	Perspective Distort	Спотворення перспективи
 	Artboard	Монтажна область
 	Exit	Вийти
+	Tool Options	Параметри інструмента
+	This tool has no options	Цей інструмент не має параметрів
+	Points:	Промені:
+	Inner Radius:	Внутрішній радіус:
+	Decay:	Згасання:
+	Segments:	Сегменти:
+	Clockwise	За годинниковою стрілкою
+	Closed	Замкнений
+	Diameter:	Діаметр:
+	Density:	Щільність:
+	Concentric Dividers:	Концентричні розділювачі:
+	Radial Dividers:	Радіальні розділювачі:

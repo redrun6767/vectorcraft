@@ -3746,3 +3746,15 @@ axis	Both	Les deux
 	Insert Inline Symbol	Insérer un symbole dans le texte
 	ICF Top/Right	ICF haut/droite
 	ICF Bottom/Left	ICF bas/gauche
+	Tool Options	Options d’outil
+	This tool has no options	Cet outil n’a pas d’options
+	Points:	Branches :
+	Inner Radius:	Rayon intérieur :
+	Decay:	Décroissance :
+	Segments:	Segments :
+	Clockwise	Sens horaire
+	Closed	Fermé
+	Diameter:	Diamètre :
+	Density:	Densité :
+	Concentric Dividers:	Séparateurs concentriques :
+	Radial Dividers:	Séparateurs radiaux :

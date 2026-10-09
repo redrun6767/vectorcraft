@@ -3724,3 +3724,15 @@ theme	Appearance	外観
 @msg	no user workspace `{from}`	ユーザーワークスペース `{from}` が見つかりません
 @msg	unknown workspace (one of {_1})	不明なワークスペースです ({_1} のいずれかを指定してください)
 @msg	workspace name can't be empty	ワークスペース名を入力してください
+	Tool Options	ツールオプション
+	This tool has no options	このツールにはオプションがありません
+	Points:	頂点の数:
+	Inner Radius:	内側の半径:
+	Decay:	減衰:
+	Segments:	セグメント数:
+	Clockwise	時計回り
+	Closed	閉じる
+	Diameter:	直径:
+	Density:	密度:
+	Concentric Dividers:	同心円状の分割線:
+	Radial Dividers:	放射状の分割線:

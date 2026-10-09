@@ -251,6 +251,8 @@ pub struct UiState {
     /// `libraries` while the dock is collapsed).
     pub open_panel: Option<String>,
     pub control_bar: bool,
+    /// Window › Tool Options: the bar of the tool in hand's settings, under the Control bar.
+    pub tool_options: bool,
     pub toolbar: bool,
     pub toolbar_double: bool,
     /// Advanced toolbar (every tool group) instead of the categorized Basic toolbar.
@@ -532,6 +534,7 @@ impl Default for UiState {
             dock_collapsed: false,
             open_panel: None,
             control_bar: false,
+            tool_options: false,
             toolbar: true,
             toolbar_double: false,
             toolbar_advanced: false,

@@ -3190,3 +3190,15 @@ axis	Both	兩者
 	Draft	草稿
 	Good	良好
 	Best	最佳
+	Tool Options	工具選項
+	This tool has no options	此工具沒有選項
+	Points:	角點數：
+	Inner Radius:	內半徑：
+	Decay:	衰減：
+	Segments:	區段：
+	Clockwise	順時針
+	Closed	封閉
+	Diameter:	直徑：
+	Density:	密度：
+	Concentric Dividers:	同心圓分隔線：
+	Radial Dividers:	放射狀分隔線：
