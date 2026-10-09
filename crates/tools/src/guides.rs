@@ -367,7 +367,13 @@ impl Targets {
     fn for_snap_to_point(self, cx: &ToolContext) -> Self {
         let mut t = self.anchors_only();
         if cx.guides {
-            t.rulers = cx.doc.guides.iter().map(|g| Ruler { vertical: g.vertical, pos: g.pos, span: cx.doc.guide_span(g) }).collect();
+            t.rulers = cx
+                .doc
+                .guides
+                .iter()
+                .filter(|g| cx.doc.guide_shown(g))
+                .map(|g| Ruler { vertical: g.vertical, pos: g.pos, span: cx.doc.guide_span(g) })
+                .collect();
         }
         t
     }

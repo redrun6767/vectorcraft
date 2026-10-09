@@ -99,6 +99,15 @@ impl Selection {
             }
         }
     }
+    /// Add ruler guide `i` to the selection, or take it out, keeping the selected objects: with a
+    /// guide selected among them, Align aligns them to it.
+    pub fn toggle_guide(&mut self, i: usize) {
+        if let Some(k) = self.guides.iter().position(|g| *g == i) {
+            self.guides.remove(k);
+        } else {
+            self.guides.push(i);
+        }
+    }
     pub fn toggle(&mut self, id: NodeId) {
         if self.contains(id) { self.remove(id) } else { self.add(id) }
     }
@@ -174,6 +183,30 @@ mod tests {
         s.set_guides([0, 1]);
         s.prune(&d);
         assert_eq!(s.guides, vec![0]);
+        // Toggled, a guide joins (or leaves) the selected objects.
+        s.set([NodeId(4)]);
+        s.toggle_guide(0);
+        assert_eq!((s.objects.clone(), s.guides.clone()), (vec![NodeId(4)], vec![0]));
+        s.toggle_guide(0);
+        assert_eq!((s.objects.clone(), s.guides.clone()), (vec![NodeId(4)], vec![]));
+    }
+
+    #[test]
+    fn guides_show_and_lock_with_their_layer() {
+        let mut d = Document::new(100.0, 100.0);
+        let layer = d.layers[0].id;
+        let g = crate::Guide { layer: Some(layer), ..crate::Guide::new(true, 10.0) };
+        assert!(d.guide_shown(&g) && d.guide_editable(&g));
+        d.node_mut(layer).unwrap().locked = true;
+        assert!(d.guide_shown(&g) && !d.guide_editable(&g), "locked: shown, not editable");
+        d.node_mut(layer).unwrap().visible = false;
+        assert!(!d.guide_shown(&g) && !d.guide_editable(&g), "hidden");
+        // On no layer, or a layer that's gone: always there.
+        assert!(d.guide_shown(&crate::Guide::new(false, 5.0)));
+        let gone = crate::Guide { layer: Some(NodeId(9999)), ..crate::Guide::new(true, 1.0) };
+        assert!(d.guide_shown(&gone) && d.guide_editable(&gone));
+        d.guides.push(g);
+        assert_eq!(d.guides_on(layer).count(), 1);
     }
 
     #[test]

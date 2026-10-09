@@ -159,7 +159,7 @@ pub fn specs() -> Vec<CommandSpec> {
             "Align",
             ["Window", "Align"],
             None,
-            "{horizontal?: \"left\"|\"center\"|\"right\", vertical?: \"top\"|\"center\"|\"bottom\", to?: \"selection\"|\"artboard\"|\"key\" (default: the key object when the selection has one, select.key, else the selection), bounds?: \"preview\"|\"geometric\" (default: the Use Preview Bounds preference; preview bounds take in strokes)}",
+            "{horizontal?: \"left\"|\"center\"|\"right\", vertical?: \"top\"|\"center\"|\"bottom\", to?: \"selection\"|\"artboard\"|\"key\" (default: the key object when the selection has one, select.key, else the selection; a ruler guide selected with the art, guide.select toggle, is the key: the art's left edges, centres or right edges go to a vertical guide, its tops, centres or bottoms to a horizontal one), bounds?: \"preview\"|\"geometric\" (default: the Use Preview Bounds preference; preview bounds take in strokes)}",
             has_selection,
             align
         ),
@@ -893,22 +893,36 @@ fn align(s: &mut Session, p: &Value) -> Result<Value> {
     let h = str_param(p, "horizontal");
     let v = str_param(p, "vertical");
     let key = s.doc()?.selection.key;
+    // A ruler guide selected with the art is what it aligns to, along its axis: the last vertical
+    // one picked for left, centre and right, the last horizontal one for top, centre and bottom.
+    let (guide_x, guide_y) = {
+        let st = s.doc()?;
+        let picked: Vec<&vectorcraft_doc::Guide> = st.selection.guides.iter().filter_map(|i| st.doc.guides.get(*i)).collect();
+        let last = |vertical: bool| picked.iter().rev().find(|g| g.vertical == vertical).map(|g| g.pos);
+        (last(true), last(false))
+    };
     let moves: Vec<(NodeId, Vec2)> = {
         let d = &s.doc()?.doc;
         items_bounds(d, &ids, preview)
             .into_iter()
             .filter(|(id, _)| Some(*id) != key || align_to(s, p) != Some("key"))
             .map(|(id, b)| {
-                let dx = match h {
-                    Some("left") => r.x0 - b.x0,
-                    Some("center") => r.center().x - b.center().x,
-                    Some("right") => r.x1 - b.x1,
+                let dx = match (h, guide_x) {
+                    (Some("left"), Some(x)) => x - b.x0,
+                    (Some("center"), Some(x)) => x - b.center().x,
+                    (Some("right"), Some(x)) => x - b.x1,
+                    (Some("left"), None) => r.x0 - b.x0,
+                    (Some("center"), None) => r.center().x - b.center().x,
+                    (Some("right"), None) => r.x1 - b.x1,
                     _ => 0.0,
                 };
-                let dy = match v {
-                    Some("top") => r.y0 - b.y0,
-                    Some("center") => r.center().y - b.center().y,
-                    Some("bottom") => r.y1 - b.y1,
+                let dy = match (v, guide_y) {
+                    (Some("top"), Some(y)) => y - b.y0,
+                    (Some("center"), Some(y)) => y - b.center().y,
+                    (Some("bottom"), Some(y)) => y - b.y1,
+                    (Some("top"), None) => r.y0 - b.y0,
+                    (Some("center"), None) => r.center().y - b.center().y,
+                    (Some("bottom"), None) => r.y1 - b.y1,
                     _ => 0.0,
                 };
                 (id, Vec2::new(dx, dy))

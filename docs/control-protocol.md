@@ -222,6 +222,13 @@ Constrain acts as Shift held (proportional scaling, moves and rotations by 45°)
 where it is greyed. The modifier keys still work while dragging (Cmd on a corner distorts it freely, Cmd+Alt+Shift in
 perspective, Cmd on a side shears).
 
+Ruler guides are layer objects: `guide.add` puts a guide on the current layer (or `layer`), where it shows, hides,
+locks and is deleted with its layer and is listed in the Layers panel (a click on its row selects it, Shift or Cmd adds
+it to the selection); `guide.setLayer {index?, layer}` moves guides to another layer, and `guide.list` gives each
+guide's `layer`, `shown` and `editable`. A guide selected with art (`guide.select {toggle: true}`, a Shift-click on the
+canvas or its row) is what `object.align` aligns the art to: left edges, centres or right edges to a vertical guide,
+tops, centres or bottoms to a horizontal one.
+
 Tool Options bar: `window.toolOptions` shows or hides a bar under the Control bar with the tool in hand and its
 settings (the Pencil's and Paintbrush's Fidelity and tolerances, the Blob Brush's and Eraser's size, the shape tools'
 corner radius, sides and points, the Spiral's and grids' segments and dividers, the Liquify and Symbolism tools'
